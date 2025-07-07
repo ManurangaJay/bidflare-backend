@@ -1,6 +1,7 @@
 package com.bidflare.backend.controller;
 
 import com.bidflare.backend.dto.CreateUserRequest;
+import com.bidflare.backend.dto.UpdateUserRequest;
 import com.bidflare.backend.dto.UserDto;
 import com.bidflare.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +34,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable UUID id, @RequestBody UserDto userDto) {
-        UserDto updated = userService.updateUser(id, userDto);
-        return ResponseEntity.ok(updated);
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(
+            @PathVariable UUID id,
+            @RequestBody UpdateUserRequest request
+    ) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.bidflare.backend.service;
 
 import com.bidflare.backend.dto.CreateUserRequest;
+import com.bidflare.backend.dto.UpdateUserRequest;
 import com.bidflare.backend.dto.UserDto;
 
 import java.util.List;
@@ -10,6 +11,6 @@ public interface UserService {
     UserDto createUser(CreateUserRequest request);
     List<UserDto> getAllUsers();
     UserDto getUserById(UUID id);
-    UserDto updateUser(UUID id, UserDto userDto);
+    UserDto updateUser(UUID id, UpdateUserRequest request);
     void deleteUser(UUID id);
 }

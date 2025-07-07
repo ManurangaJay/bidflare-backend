@@ -1,6 +1,7 @@
 package com.bidflare.backend.service.impl;
 
 import com.bidflare.backend.dto.CreateUserRequest;
+import com.bidflare.backend.dto.UpdateUserRequest;
 import com.bidflare.backend.dto.UserDto;
 import com.bidflare.backend.entity.User;
 import com.bidflare.backend.mapper.UserMapper;
@@ -50,16 +51,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UUID id, UserDto userDto) {
+    public UserDto updateUser(UUID id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        user.setName(userDto.name());
-        user.setEmail(userDto.email());
+        boolean updated = false;
 
-        user = userRepository.save(user);
-        return UserMapper.toDto(user);
+        if (request.name() != null && !request.name().equals(user.getName())) {
+            user.setName(request.name());
+            updated = true;
+        }
+
+        if (request.email() != null && !request.email().equals(user.getEmail())) {
+            user.setEmail(request.email());
+            updated = true;
+        }
+
+        if (request.password() != null && !request.password().isBlank()) {
+            user.setPasswordHash(passwordEncoder.encode(request.password()));
+            updated = true;
+        }
+
+        if (request.profileImage() != null && !request.profileImage().equals(user.getProfileImage())) {
+            user.setProfileImage(request.profileImage());
+            updated = true;
+        }
+
+        if (!updated) {
+            throw new IllegalArgumentException("No fields provided or no changes detected.");
+        }
+
+        User updatedUser = userRepository.save(user);
+        return UserMapper.toDto(updatedUser);
     }
+
+
 
 
     @Override
