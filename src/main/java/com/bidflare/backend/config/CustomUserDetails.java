@@ -1,4 +1,4 @@
-package com.bidflare.backend.security;
+package com.bidflare.backend.config;
 
 import com.bidflare.backend.entity.User;
 import org.springframework.security.core.GrantedAuthority;

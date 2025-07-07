@@ -1,4 +1,4 @@
-package com.bidflare.backend.security;
+package com.bidflare.backend.config.service;
 
 import com.bidflare.backend.entity.User;
 import com.bidflare.backend.repository.UserRepository;
@@ -18,6 +18,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-        return new com.bidflare.backend.security.CustomUserDetails(user);
+        return new com.bidflare.backend.config.CustomUserDetails(user);
     }
 }

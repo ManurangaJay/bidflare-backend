@@ -17,7 +17,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final com.bidflare.backend.security.jwt.JwtUtil jwtUtil;
-    private final com.bidflare.backend.security.CustomUserDetailsService userDetailsService;
+    private final com.bidflare.backend.config.service.CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
