@@ -49,6 +49,12 @@ public class UserServiceImpl implements UserService {
                 .map(UserMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+    @Override
+    public UserDto getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(UserMapper::toDto)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
     @Override
     public UserDto updateUser(UUID id, UpdateUserRequest request) {
