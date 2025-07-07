@@ -34,7 +34,7 @@ public class AuthController {
         // Get the full User entity to access userId
         UserDto user = userService.getUserByEmail(request.getEmail());
 
-        String token = jwtUtil.generateToken(userDetails.getUsername(), user.id().toString());
+        String token = jwtUtil.generateToken(userDetails.getUsername(), user.id().toString(),user.role().name());
 
         return ResponseEntity.ok(new AuthResponse(token));
     }
