@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -62,9 +63,16 @@ public class JwtUtil {
         Claims claims = getClaims(token);
         return claimsResolver.apply(claims);
     }
-    public String extractUserIdFromPrincipal(Principal principal) {
-        String token = ((UsernamePasswordAuthenticationToken) principal).getCredentials().toString();
+    public String extractUserIdFromAuthentication(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Unauthenticated");
+        }
+
+        String token = (String) authentication.getCredentials();
+        if (token == null) {
+            throw new RuntimeException("Missing JWT token in credentials");
+        }
+
         return getClaims(token).get("userId", String.class);
     }
-
 }

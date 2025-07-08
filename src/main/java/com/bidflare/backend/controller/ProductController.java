@@ -8,6 +8,8 @@ import com.bidflare.backend.security.jwt.JwtUtil;
 import com.bidflare.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -25,7 +27,9 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponseDto> create(@RequestBody CreateProductRequestDto request,
                                                   Principal principal) {
-        UUID sellerId = UUID.fromString(jwtUtil.extractUserIdFromPrincipal(principal));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
+        UUID sellerId = UUID.fromString(userId);
         return ResponseEntity.ok(productService.createProduct(request, sellerId));
     }
 
@@ -33,14 +37,18 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id,
                                                   @RequestBody UpdateProductRequestDto request,
                                                   Principal principal) {
-        UUID sellerId = UUID.fromString(jwtUtil.extractUserIdFromPrincipal(principal));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
+        UUID sellerId = UUID.fromString(userId);
         return ResponseEntity.ok(productService.updateProduct(id, request, sellerId));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id,
                                        Principal principal) {
-        UUID sellerId = UUID.fromString(jwtUtil.extractUserIdFromPrincipal(principal));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
+        UUID sellerId = UUID.fromString(userId);
         productService.deleteProduct(id, sellerId);
         return ResponseEntity.noContent().build();
     }
@@ -57,7 +65,9 @@ public class ProductController {
 
     @GetMapping("/seller")
     public ResponseEntity<List<ProductResponseDto>> getSellerProducts(Principal principal) {
-        UUID sellerId = UUID.fromString(jwtUtil.extractUserIdFromPrincipal(principal));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
+        UUID sellerId = UUID.fromString(userId);
         return ResponseEntity.ok(productService.getProductsBySeller(sellerId));
     }
 }
