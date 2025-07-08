@@ -3,10 +3,12 @@ package com.bidflare.backend.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.Principal;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -60,4 +62,9 @@ public class JwtUtil {
         Claims claims = getClaims(token);
         return claimsResolver.apply(claims);
     }
+    public String extractUserIdFromPrincipal(Principal principal) {
+        String token = ((UsernamePasswordAuthenticationToken) principal).getCredentials().toString();
+        return getClaims(token).get("userId", String.class);
+    }
+
 }
