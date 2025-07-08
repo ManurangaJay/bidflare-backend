@@ -33,9 +33,9 @@ public class Product {
 
     private BigDecimal startingPrice;
 
-//    @ManyToOne
-//    @JoinColumn(name = "category_id")
-//    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Enumerated(EnumType.STRING)
     private Status status;
