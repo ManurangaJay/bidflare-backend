@@ -1,7 +1,7 @@
 package com.bidflare.backend.service.impl;
 
-import com.bidflare.backend.dto.CreateUserRequest;
-import com.bidflare.backend.dto.UpdateUserRequest;
+import com.bidflare.backend.dto.CreateUserRequestDto;
+import com.bidflare.backend.dto.UpdateUserRequestDto;
 import com.bidflare.backend.dto.UserDto;
 import com.bidflare.backend.entity.User;
 import com.bidflare.backend.mapper.UserMapper;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDto createUser(CreateUserRequest request) {
+    public UserDto createUser(CreateUserRequestDto request) {
         User user = User.builder()
                 .email(request.email())
                 .passwordHash(passwordEncoder.encode(request.password()))
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UUID id, UpdateUserRequest request) {
+    public UserDto updateUser(UUID id, UpdateUserRequestDto request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
