@@ -1,16 +1,13 @@
 package com.bidflare.backend.service.impl;
 
-import com.bidflare.backend.dto.*;
-import com.bidflare.backend.dto.product.CreateProductRequestDto;
-import com.bidflare.backend.dto.product.ProductResponseDto;
-import com.bidflare.backend.dto.product.UpdateProductRequestDto;
+import com.bidflare.backend.dto.product.*;
 import com.bidflare.backend.entity.*;
+import com.bidflare.backend.mapper.ProductMapper;
 import com.bidflare.backend.repository.*;
 import com.bidflare.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -20,6 +17,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepo;
     private final UserRepository userRepo;
     private final CategoryRepository categoryRepo;
+    private final ProductMapper productMapper;
 
     @Override
     public ProductResponseDto createProduct(CreateProductRequestDto request, UUID sellerId) {
@@ -29,20 +27,8 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepo.findById(request.categoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        Product product = Product.builder()
-                .title(request.title())
-                .description(request.description())
-                .startingPrice(request.startingPrice())
-                .category(category)
-                .status(Product.Status.DRAFT)
-                .seller(seller)
-                .createdAt(Instant.now())
-                .updatedAt(Instant.now())
-                .build();
-
-        product = productRepo.save(product);
-
-        return mapToDto(product);
+        Product product = productMapper.toEntity(request, seller, category);
+        return productMapper.toDto(productRepo.save(product));
     }
 
     @Override
@@ -57,14 +43,8 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepo.findById(request.categoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        product.setTitle(request.title());
-        product.setDescription(request.description());
-        product.setStartingPrice(request.startingPrice());
-        product.setCategory(category);
-        product.setStatus(Product.Status.valueOf(request.status()));
-        product.setUpdatedAt(Instant.now());
-
-        return mapToDto(productRepo.save(product));
+        productMapper.updateEntity(product, request, category);
+        return productMapper.toDto(productRepo.save(product));
     }
 
     @Override
@@ -83,34 +63,20 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto getProductById(UUID id) {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        return mapToDto(product);
+        return productMapper.toDto(product);
     }
 
     @Override
     public List<ProductResponseDto> getAllProducts() {
         return productRepo.findAll().stream()
-                .map(this::mapToDto)
+                .map(productMapper::toDto)
                 .toList();
     }
 
     @Override
     public List<ProductResponseDto> getProductsBySeller(UUID sellerId) {
         return productRepo.findBySellerId(sellerId).stream()
-                .map(this::mapToDto)
+                .map(productMapper::toDto)
                 .toList();
-    }
-
-    private ProductResponseDto mapToDto(Product product) {
-        return new ProductResponseDto(
-                product.getId(),
-                product.getTitle(),
-                product.getDescription(),
-                product.getStartingPrice(),
-                product.getStatus().name(),
-                product.getSeller().getId(),
-                product.getCategory().getId(),
-                product.getCreatedAt(),
-                product.getUpdatedAt()
-        );
     }
 }
