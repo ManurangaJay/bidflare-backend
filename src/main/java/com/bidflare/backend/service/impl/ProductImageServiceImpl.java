@@ -27,7 +27,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     private final ProductRepository productRepository;
     private final ProductImageMapper mapper;
 
-    private final String UPLOAD_DIR = new File("uploads").getAbsolutePath();
+    private final String UPLOAD_DIR = new File("src/main/resources/static/images").getAbsolutePath();
 
     @Override
     public ProductImageDto addImage(CreateProductImageDto dto) {
@@ -47,7 +47,7 @@ public class ProductImageServiceImpl implements ProductImageService {
 
         ProductImage image = ProductImage.builder()
                 .product(product)
-                .imageUrl(filePath)
+                .imageUrl("/images/" + filename)
                 .build();
 
         return mapper.toDto(imageRepository.save(image));
