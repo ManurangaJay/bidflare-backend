@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.Principal;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -74,5 +75,11 @@ public class JwtUtil {
         }
 
         return getClaims(token).get("userId", String.class);
+    }
+    public String extractRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+    public List<String> extractRoles(String token) {
+        return getClaims(token).get("roles", List.class);
     }
 }
