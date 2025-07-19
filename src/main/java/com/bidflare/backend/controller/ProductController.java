@@ -8,6 +8,7 @@ import com.bidflare.backend.security.jwt.JwtUtil;
 import com.bidflare.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class ProductController {
     private final ProductService productService;
     private final JwtUtil jwtUtil;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @PostMapping
     public ResponseEntity<ProductResponseDto> create(@RequestBody CreateProductRequestDto request,
                                                   Principal principal) {
@@ -33,6 +35,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.createProduct(request, sellerId));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id,
                                                   @RequestBody UpdateProductRequestDto request,
@@ -43,6 +46,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.updateProduct(id, request, sellerId));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id,
                                        Principal principal) {
@@ -53,16 +57,19 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'BUYER', 'SELLER')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'BUYER', 'SELLER')")
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAll() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'BUYER', 'SELLER')")
     @GetMapping("/seller")
     public ResponseEntity<List<ProductResponseDto>> getSellerProducts(Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
