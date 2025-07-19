@@ -41,4 +41,9 @@ public class AuctionController {
         auctionService.deleteAuction(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<AuctionResponseDto>> getAuctionsByProductId(@PathVariable UUID productId) {
+        return ResponseEntity.ok(auctionService.getAuctionsByProductId(productId));
+    }
 }

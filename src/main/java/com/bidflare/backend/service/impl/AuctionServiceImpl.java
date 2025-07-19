@@ -67,4 +67,12 @@ public class AuctionServiceImpl implements AuctionService {
                 .orElseThrow(() -> new RuntimeException("Auction not found"));
         auctionRepository.delete(auction);
     }
+    @Override
+    public List<AuctionResponseDto> getAuctionsByProductId(UUID productId) {
+        List<Auction> auctions = auctionRepository.findByProductId(productId);
+        return auctions.stream()
+                .map(AuctionMapper::toDto)
+                .toList();
+    }
+
 }

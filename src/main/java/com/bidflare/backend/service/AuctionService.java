@@ -11,4 +11,5 @@ public interface AuctionService {
     AuctionResponseDto getAuctionById(UUID id);
     AuctionResponseDto updateAuction(UUID id, AuctionUpdateDto dto);
     void deleteAuction(UUID id);
+    List<AuctionResponseDto> getAuctionsByProductId(UUID productId);
 }
