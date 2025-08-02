@@ -79,6 +79,4 @@ public class BidServiceImpl implements BidService {
             );
         }).collect(Collectors.toList());
     }
-
-
 }
