@@ -75,8 +75,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(createError("DUPLICATE_ENTRY", message), HttpStatus.CONFLICT);
     }
 
-
-
     private Map<String, String> createError(String code, String message) {
         Map<String, String> error = new HashMap<>();
         error.put("error", code);
