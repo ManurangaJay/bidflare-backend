@@ -20,7 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserRequestDto request) {
         return ResponseEntity.ok(userService.createUser(request));
