@@ -1,8 +1,10 @@
 package com.bidflare.backend.controller;
 
 import com.bidflare.backend.dto.wishlist.WishlistDTO;
+import com.bidflare.backend.repository.UserRepository;
 import com.bidflare.backend.service.WishlistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,13 @@ import java.util.UUID;
 public class WishlistController {
 
     private final WishlistService wishlistService;
+    @Autowired
+    private UserRepository userRepository;
 
     private UUID getCurrentUserId(Principal principal) {
-        return UUID.fromString(principal.getName());
+        return userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','BUYER')")
