@@ -5,9 +5,11 @@ import com.bidflare.backend.entity.Auction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface BidRepository extends JpaRepository<Bid, UUID> {
     List<Bid> findByAuctionOrderByCreatedAtDesc(Auction auction);
     List<Bid> findByBidderId(UUID bidderId);
+    Optional<Bid> findTopByAuctionIdOrderByAmountDescCreatedAtAsc(UUID auctionId);
 }
