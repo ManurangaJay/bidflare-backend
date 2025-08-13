@@ -1,8 +1,8 @@
 package com.bidflare.backend.controller;
 
-import com.bidflare.backend.dto.wishlist.WishlistDTO;
+import com.bidflare.backend.dto.wishlist.WatchlistDTO;
 import com.bidflare.backend.repository.UserRepository;
-import com.bidflare.backend.service.WishlistService;
+import com.bidflare.backend.service.WatchlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/wishlist")
 @RequiredArgsConstructor
-public class WishlistController {
+public class WatchlistController {
 
-    private final WishlistService wishlistService;
+    private final WatchlistService wishlistService;
     @Autowired
     private UserRepository userRepository;
 
@@ -30,13 +30,13 @@ public class WishlistController {
 
     @PreAuthorize("hasAnyRole('ADMIN','BUYER')")
     @GetMapping
-    public ResponseEntity<List<WishlistDTO.WishlistResponse>> getWishlist(Principal principal) {
+    public ResponseEntity<List<WatchlistDTO.WishlistResponse>> getWishlist(Principal principal) {
         return ResponseEntity.ok(wishlistService.getWishlist(getCurrentUserId(principal)));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','BUYER')")
     @PostMapping
-    public ResponseEntity<WishlistDTO.WishlistResponse> add(@RequestBody WishlistDTO.WishlistCreateRequest request, Principal principal) {
+    public ResponseEntity<WatchlistDTO.WishlistResponse> add(@RequestBody WatchlistDTO.WishlistCreateRequest request, Principal principal) {
         return ResponseEntity.ok(wishlistService.addToWishlist(getCurrentUserId(principal), request));
     }
 

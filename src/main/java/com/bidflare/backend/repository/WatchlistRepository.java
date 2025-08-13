@@ -1,17 +1,17 @@
 package com.bidflare.backend.repository;
 
-import com.bidflare.backend.entity.WishlistItem;
+import com.bidflare.backend.entity.WatchlistItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface WishlistRepository extends JpaRepository<WishlistItem, UUID> {
+public interface WatchlistRepository extends JpaRepository<WatchlistItem, UUID> {
 
-    List<WishlistItem> findByUserId(UUID userId);
+    List<WatchlistItem> findByUserId(UUID userId);
 
-    Optional<WishlistItem> findByUserIdAndProductId(UUID userId, UUID productId);
+    Optional<WatchlistItem> findByUserIdAndProductId(UUID userId, UUID productId);
 
     void deleteByUserIdAndProductId(UUID userId, UUID productId);
 

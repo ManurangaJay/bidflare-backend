@@ -3,7 +3,7 @@ package com.bidflare.backend.dto.wishlist;
 import java.time.Instant;
 import java.util.UUID;
 
-public class WishlistDTO {
+public class WatchlistDTO {
 
     // Create DTO
     public record WishlistCreateRequest(UUID productId) {}
