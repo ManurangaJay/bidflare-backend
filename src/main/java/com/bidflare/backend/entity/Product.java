@@ -1,6 +1,5 @@
 package com.bidflare.backend.entity;
 
-import com.bidflare.backend.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +43,6 @@ public class Product {
     private Instant updatedAt;
 
     public enum Status {
-        DRAFT, LISTED, SOLD
+        DRAFT, LISTED, SOLD, PAID, SHIPPED, DELIVERED
     }
 }
