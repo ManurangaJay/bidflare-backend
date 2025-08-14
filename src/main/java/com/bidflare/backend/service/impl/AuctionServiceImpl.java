@@ -11,9 +11,11 @@ import com.bidflare.backend.repository.UserRepository;
 import com.bidflare.backend.service.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,4 +77,12 @@ public class AuctionServiceImpl implements AuctionService {
                 .toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<AuctionResponseDto> getAuctionsByWinnerId(UUID winnerId) {
+        List<Auction> auctions = auctionRepository.findByWinnerId(winnerId);
+        return auctions.stream()
+                .map(AuctionMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface AuctionRepository extends JpaRepository<Auction, UUID> {
     List<Auction> findByProductId(UUID productId);
     List<Auction> findAllByEndTimeBeforeAndIsClosedFalse(LocalDateTime endTime);
+    List<Auction> findByWinnerId(UUID winnerId);
 }

@@ -5,6 +5,8 @@ import com.bidflare.backend.service.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.UUID;
 public class AuctionController {
 
     private final AuctionService auctionService;
+    private final com.bidflare.backend.security.jwt.JwtUtil jwtUtil;
 
     @PreAuthorize("hasAnyRole('ADMIN','SELLER' )")
     @PostMapping
@@ -52,5 +55,15 @@ public class AuctionController {
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<AuctionResponseDto>> getAuctionsByProductId(@PathVariable UUID productId) {
         return ResponseEntity.ok(auctionService.getAuctionsByProductId(productId));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'BUYER')")
+    @GetMapping("/won")
+    public ResponseEntity<List<AuctionResponseDto>> getWonAuctions() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
+        UUID winnerId = UUID.fromString(userId);
+
+        return ResponseEntity.ok(auctionService.getAuctionsByWinnerId(winnerId));
     }
 }
