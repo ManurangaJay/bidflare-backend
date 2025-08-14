@@ -36,10 +36,10 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}") // Changed from @PutMapping
     public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id,
-                                                  @RequestBody UpdateProductRequestDto request,
-                                                  Principal principal) {
+                                                     @RequestBody UpdateProductRequestDto request,
+                                                     Principal principal) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
         UUID sellerId = UUID.fromString(userId);

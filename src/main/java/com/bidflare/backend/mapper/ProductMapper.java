@@ -30,7 +30,7 @@ public class ProductMapper {
         product.setTitle(request.title());
         product.setDescription(request.description());
         product.setStartingPrice(request.startingPrice());
-        product.setStatus(Product.Status.valueOf(request.status()));
+        product.setStatus(Product.Status.valueOf(String.valueOf(request.status())));
         product.setCategory(category);
         product.setUpdatedAt(Instant.now());
     }

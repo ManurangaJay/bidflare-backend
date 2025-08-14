@@ -33,18 +33,39 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto updateProduct(UUID id, UpdateProductRequestDto request, UUID sellerId) {
+        // Fetch the existing product from the database
         Product product = productRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
+        // Authorize the action (ensure the seller owns the product)
         if (!product.getSeller().getId().equals(sellerId)) {
-            throw new RuntimeException("Unauthorized");
+            throw new RuntimeException("Unauthorized: You do not own this product.");
         }
 
-        Category category = categoryRepo.findById(request.categoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        // Apply updates conditionally for each non-null field
+        if (request.title() != null && !request.title().isBlank()) {
+            product.setTitle(request.title());
+        }
+        if (request.description() != null) {
+            product.setDescription(request.description());
+        }
+        if (request.startingPrice() != null) {
+            product.setStartingPrice(request.startingPrice());
+        }
+        if (request.status() != null) {
+            product.setStatus(request.status());
+        }
+        if (request.categoryId() != null) {
+            Category category = categoryRepo.findById(request.categoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.categoryId()));
+            product.setCategory(category);
+        }
 
-        productMapper.updateEntity(product, request, category);
-        return productMapper.toDto(productRepo.save(product));
+        // The productMapper.updateEntity() call is no longer needed here.
+
+        // 4. Save the partially updated product and return the DTO
+        Product updatedProduct = productRepo.save(product);
+        return productMapper.toDto(updatedProduct);
     }
 
     @Override
