@@ -15,7 +15,8 @@ public class AuctionMapper {
                 auction.getStartTime(),
                 auction.getEndTime(),
                 auction.isClosed(),
-                auction.getWinner() != null ? auction.getWinner().getId() : null
+                auction.getWinner() != null ? auction.getWinner().getId() : null,
+                auction.getLastPrice()
         );
     }
 

@@ -2,6 +2,7 @@ package com.bidflare.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal; // Import BigDecimal for monetary values
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,6 +23,9 @@ public class Auction {
 
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
+
+    @Column(name = "last_price", precision = 19, scale = 2)
+    private BigDecimal lastPrice;
 
     @Column(name = "is_closed", nullable = false)
     private boolean isClosed;

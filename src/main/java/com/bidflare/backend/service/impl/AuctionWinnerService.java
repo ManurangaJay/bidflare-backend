@@ -1,4 +1,5 @@
 package com.bidflare.backend.service.impl;
+
 import com.bidflare.backend.entity.Auction;
 import com.bidflare.backend.entity.Bid;
 import com.bidflare.backend.repository.AuctionRepository;
@@ -50,7 +51,11 @@ public class AuctionWinnerService {
                 // A winner was found
                 Bid winner = winningBid.get();
                 auction.setWinner(winner.getBidder()); // Set the winner_id
-                System.out.println("Auction ID: " + auction.getId() + " won by User ID: " + winner.getBidder().getId());
+
+                // Set the last price from the winning bid's amount
+                auction.setLastPrice(winner.getAmount());
+
+                System.out.println("Auction ID: " + auction.getId() + " won by User ID: " + winner.getBidder().getId() + " with price: " + winner.getAmount());
 
                 // Notify the winner
                 // Optionally, notify losers
@@ -59,6 +64,7 @@ public class AuctionWinnerService {
             } else {
                 // No bids were placed on this auction
                 System.out.println("Auction ID: " + auction.getId() + " closed with no bids.");
+                // lastPrice remains null, which is correct
                 auction.setWinner(null);
             }
 
