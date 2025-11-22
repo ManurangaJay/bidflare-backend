@@ -2,9 +2,12 @@ package com.bidflare.backend.service.impl;
 
 import com.bidflare.backend.entity.Auction;
 import com.bidflare.backend.entity.Bid;
+import com.bidflare.backend.entity.Product;
 import com.bidflare.backend.repository.AuctionRepository;
 import com.bidflare.backend.repository.BidRepository;
+import com.bidflare.backend.repository.ProductRepository;
 import com.bidflare.backend.service.NotificationService;
+import com.bidflare.backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,9 @@ public class AuctionWinnerService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     /**
      * This method runs every minute to process auctions that have ended.
@@ -54,6 +60,12 @@ public class AuctionWinnerService {
 
                 // Set the last price from the winning bid's amount
                 auction.setLastPrice(winner.getAmount());
+
+                Product product = auction.getProduct();
+                if (product!= null){
+                    product.setStatus(Product.Status.SOLD);
+                    productRepository.save(product);
+                }
 
                 System.out.println("Auction ID: " + auction.getId() + " won by User ID: " + winner.getBidder().getId() + " with price: " + winner.getAmount());
 

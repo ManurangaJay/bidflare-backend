@@ -60,9 +60,6 @@ public class ProductServiceImpl implements ProductService {
                     .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.categoryId()));
             product.setCategory(category);
         }
-
-        // The productMapper.updateEntity() call is no longer needed here.
-
         // 4. Save the partially updated product and return the DTO
         Product updatedProduct = productRepo.save(product);
         return productMapper.toDto(updatedProduct);
