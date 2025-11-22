@@ -49,7 +49,8 @@ public class SecurityConfig {
                                 "/api/products/*/images",
                                 "/api/product-images/**",
                                 "/uploads/**",
-                                "/images/**"
+                                "/images/**",
+                                "/api/payments/webhook"
                         ).permitAll()
 
                         // All other endpoints require authentication
