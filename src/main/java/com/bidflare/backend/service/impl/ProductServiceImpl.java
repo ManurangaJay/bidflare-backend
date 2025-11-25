@@ -1,6 +1,7 @@
 package com.bidflare.backend.service.impl;
 
 import com.bidflare.backend.dto.product.*;
+import com.bidflare.backend.entity.Product;
 import com.bidflare.backend.entity.*;
 import com.bidflare.backend.mapper.ProductMapper;
 import com.bidflare.backend.repository.*;
@@ -96,5 +97,14 @@ public class ProductServiceImpl implements ProductService {
         return productRepo.findBySellerId(sellerId).stream()
                 .map(productMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public void markAsDelivered(UUID productId, UUID sellerId) {
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+        // Update the status to DELIVERED
+        product.setStatus(Product.Status.DELIVERED);
+        productRepo.save(product);
     }
 }

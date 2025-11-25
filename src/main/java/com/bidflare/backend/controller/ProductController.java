@@ -35,8 +35,8 @@ public class ProductController {
         return ResponseEntity.ok(productService.createProduct(request, sellerId));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
-    @PatchMapping("/{id}") // Changed from @PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SELLER', 'BUYER')")
+    @PatchMapping("/{id}")
     public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id,
                                                      @RequestBody UpdateProductRequestDto request,
                                                      Principal principal) {
@@ -76,5 +76,16 @@ public class ProductController {
         String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
         UUID sellerId = UUID.fromString(userId);
         return ResponseEntity.ok(productService.getProductsBySeller(sellerId));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','BUYER')")
+    @PatchMapping("/{id}/deliver")
+    public ResponseEntity<Void> markAsDelivered(@PathVariable UUID id,
+                                                Principal principal) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = jwtUtil.extractUserIdFromAuthentication(authentication);
+        UUID sellerId = UUID.fromString(userId);
+        productService.markAsDelivered(id, sellerId);
+        return ResponseEntity.ok().build();
     }
 }

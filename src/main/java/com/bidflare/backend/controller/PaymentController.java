@@ -44,7 +44,6 @@ public class PaymentController {
     @Value("${stripe.webhook.secret}")
     private String webhookSecret;
 
-    // Updated constructor to include UserRepository
     public PaymentController(AuctionService auctionService, UserRepository userRepository) {
         this.auctionService = auctionService;
         this.userRepository = userRepository;
@@ -59,18 +58,17 @@ public class PaymentController {
     @PostMapping("/create-payment-intent")
     public ResponseEntity<PaymentResponseDTO> createPaymentIntent(
             @RequestBody PaymentRequestDTO paymentRequest,
-            Authentication authentication // Changed from @AuthenticationPrincipal User
+            Authentication authentication
     ) {
-        // 1. Validate Authentication object exists
+        // Validate Authentication object exists
         if (authentication == null || !authentication.isAuthenticated()) {
             logger.warn("Attempt to create payment intent without authentication context.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        // 2. Retrieve the User Entity from Database using the username/email from the token
-        // This avoids casting issues with the Principal object
+        // Retrieve the User Entity from Database using the username/email from the token
         String usernameOrEmail = authentication.getName();
-        User currentUser = userRepository.findByEmail(usernameOrEmail) // Or findByUsername depending on your setup
+        User currentUser = userRepository.findByEmail(usernameOrEmail)
                 .orElse(null);
 
         if (currentUser == null) {
@@ -116,8 +114,6 @@ public class PaymentController {
 
     /**
      * Endpoint for Stripe Webhook
-     * NOTE: Removed @PreAuthorize because Stripe servers do not send JWTs.
-     * Validated via Stripe-Signature header instead.
      */
     @PostMapping("/webhook")
     public ResponseEntity<String> handleStripeWebhook(

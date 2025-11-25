@@ -15,4 +15,5 @@ public interface ProductService {
     ProductResponseDto getProductById(UUID id);
     List<ProductResponseDto> getAllProducts();
     List<ProductResponseDto> getProductsBySeller(UUID sellerId);
+    void markAsDelivered(UUID productId, UUID sellerId);
 }
