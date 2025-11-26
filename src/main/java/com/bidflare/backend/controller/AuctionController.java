@@ -1,5 +1,6 @@
 package com.bidflare.backend.controller;
 
+import com.bidflare.backend.config.jwt.JwtUtil;
 import com.bidflare.backend.dto.auction.*;
 import com.bidflare.backend.service.AuctionService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class AuctionController {
 
     private final AuctionService auctionService;
-    private final com.bidflare.backend.security.jwt.JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @PreAuthorize("hasAnyRole('ADMIN','SELLER' )")
     @PostMapping

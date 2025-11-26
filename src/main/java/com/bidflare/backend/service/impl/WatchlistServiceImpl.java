@@ -2,10 +2,12 @@ package com.bidflare.backend.service.impl;
 
 import com.bidflare.backend.dto.wishlist.WatchlistDTO;
 import com.bidflare.backend.entity.WatchlistItem;
+import com.bidflare.backend.event.NotificationEvent;
 import com.bidflare.backend.mapper.WatchlistMapper;
 import com.bidflare.backend.repository.WatchlistRepository;
 import com.bidflare.backend.service.WatchlistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ public class WatchlistServiceImpl implements WatchlistService {
 
     private final WatchlistRepository watchlistRepository;
     private final WatchlistMapper mapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public List<WatchlistDTO.WishlistResponse> getWishlist(UUID userId) {
@@ -38,6 +41,13 @@ public class WatchlistServiceImpl implements WatchlistService {
                 .createdAt(Instant.now())
                 .build();
 
+        eventPublisher.publishEvent(new NotificationEvent(
+                userId,
+                "ADD_TO_WATCHLIST",
+                "A new product was added to your watchlist!",
+                item.getProductId()
+        ));
+
         return mapper.toResponse(watchlistRepository.save(item));
     }
 
@@ -45,6 +55,12 @@ public class WatchlistServiceImpl implements WatchlistService {
     @Transactional
     public void removeFromWishlist(UUID userId, UUID productId) {
         watchlistRepository.deleteByUserIdAndProductId(userId, productId);
+        eventPublisher.publishEvent(new NotificationEvent(
+                userId,
+                "REMOVE_FROM_WATCHLIST",
+                "A product was removed from your watchlist!",
+                productId
+        ));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.bidflare.backend.entity;
 import com.bidflare.backend.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class Notification {
     private User user;
 
     @Column(nullable = false)
-    private String type; // e.g., 'BID_OUTBID', 'WINNER_NOTICE'
+    private String type;
 
     @Column(nullable = false)
     private String message;
@@ -32,6 +33,7 @@ public class Notification {
     @Column(nullable = false)
     private Boolean isRead = false;
 
+    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 }

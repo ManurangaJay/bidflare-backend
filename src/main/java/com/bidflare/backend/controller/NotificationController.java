@@ -19,12 +19,6 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'BUYER', 'SELLER')")
-    @PostMapping
-    public ResponseEntity<NotificationResponseDto> create(@RequestBody NotificationCreateDto dto) {
-        return ResponseEntity.ok(notificationService.create(dto));
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'BUYER', 'SELLER')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<NotificationResponseDto>> getByUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(notificationService.getByUser(userId));

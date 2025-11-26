@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final com.bidflare.backend.security.jwt.JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
     private final com.bidflare.backend.config.service.CustomUserDetailsService userDetailsService;
 
     @Override

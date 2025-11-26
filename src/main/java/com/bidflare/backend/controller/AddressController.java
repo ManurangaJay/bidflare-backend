@@ -1,5 +1,6 @@
 package com.bidflare.backend.controller;
 
+import com.bidflare.backend.config.jwt.JwtUtil;
 import com.bidflare.backend.dto.address.AddressDto;
 import com.bidflare.backend.service.AddressService;
 import jakarta.validation.Valid;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class AddressController {
 
     private final AddressService addressService;
-    private final com.bidflare.backend.security.jwt.JwtUtil jwtUtil; // Injected for user extraction
+    private final JwtUtil jwtUtil;
 
     @PostMapping
     public ResponseEntity<AddressDto.AddressResponse> createAddress(@Valid @RequestBody AddressDto.AddressRequest request) {

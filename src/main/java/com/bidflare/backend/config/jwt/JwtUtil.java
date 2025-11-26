@@ -1,4 +1,4 @@
-package com.bidflare.backend.security.jwt;
+package com.bidflare.backend.config.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

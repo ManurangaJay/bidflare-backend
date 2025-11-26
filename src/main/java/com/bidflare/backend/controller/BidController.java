@@ -1,5 +1,6 @@
 package com.bidflare.backend.controller;
 
+import com.bidflare.backend.config.jwt.JwtUtil;
 import com.bidflare.backend.dto.bid.BidCreateDto;
 import com.bidflare.backend.dto.bid.BidResponseDto;
 import com.bidflare.backend.dto.bid.BidWithAuctionProductDto;
@@ -20,7 +21,7 @@ import java.util.UUID;
 public class BidController {
 
     private final BidService bidService;
-    private final com.bidflare.backend.security.jwt.JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @PreAuthorize("hasAnyRole('ADMIN','BUYER')")
     @PostMapping

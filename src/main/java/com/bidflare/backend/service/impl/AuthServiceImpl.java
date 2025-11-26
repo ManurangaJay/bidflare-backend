@@ -1,9 +1,9 @@
 package com.bidflare.backend.service.impl;
 
+import com.bidflare.backend.config.jwt.JwtUtil;
 import com.bidflare.backend.dto.AuthResponseDto;
 import com.bidflare.backend.dto.LoginRequestDto;
 import com.bidflare.backend.dto.UserDto;
-import com.bidflare.backend.security.jwt.JwtUtil;
 import com.bidflare.backend.service.AuthService;
 import com.bidflare.backend.service.UserService;
 import lombok.RequiredArgsConstructor;

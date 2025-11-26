@@ -2,6 +2,7 @@ package com.bidflare.backend.service.impl;
 
 import com.bidflare.backend.dto.auction.*;
 import com.bidflare.backend.entity.Auction;
+import com.bidflare.backend.event.NotificationEvent;
 import com.bidflare.backend.exception.AuctionNotFoundException;
 import com.bidflare.backend.exception.InvalidAuctionStateException;
 import com.bidflare.backend.mapper.AuctionMapper;
@@ -13,6 +14,7 @@ import com.bidflare.backend.repository.UserRepository;
 import com.bidflare.backend.service.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class AuctionServiceImpl implements AuctionService {
     private final AuctionRepository auctionRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public AuctionResponseDto createAuction(AuctionCreateDto dto) {
@@ -39,7 +42,14 @@ public class AuctionServiceImpl implements AuctionService {
                 .orElseThrow(() -> new AuctionNotFoundException("Product not found with id: " + dto.productId()));
 
         Auction auction = AuctionMapper.toEntity(dto, product);
-        return AuctionMapper.toDto(auctionRepository.save(auction));
+        Auction savedAuction = auctionRepository.save(auction);
+        eventPublisher.publishEvent(new NotificationEvent(
+                product.getSeller().getId(),
+                "AUCTION_CREATED",
+                "The auction was successfully created on the product " + product.getTitle() +".",
+                auction.getId()
+        ));
+        return AuctionMapper.toDto(savedAuction);
     }
 
     @Override

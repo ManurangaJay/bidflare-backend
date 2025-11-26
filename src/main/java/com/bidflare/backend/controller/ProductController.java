@@ -1,10 +1,10 @@
 package com.bidflare.backend.controller;
 
+import com.bidflare.backend.config.jwt.JwtUtil;
 import com.bidflare.backend.dto.*;
 import com.bidflare.backend.dto.product.CreateProductRequestDto;
 import com.bidflare.backend.dto.product.ProductResponseDto;
 import com.bidflare.backend.dto.product.UpdateProductRequestDto;
-import com.bidflare.backend.security.jwt.JwtUtil;
 import com.bidflare.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

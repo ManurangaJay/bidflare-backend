@@ -3,12 +3,14 @@ package com.bidflare.backend.service.impl;
 import com.bidflare.backend.dto.address.AddressDto;
 import com.bidflare.backend.entity.Address;
 import com.bidflare.backend.entity.User;
+import com.bidflare.backend.event.NotificationEvent;
 import com.bidflare.backend.exception.ResourceNotFoundException;
 import com.bidflare.backend.mapper.AddressMapper;
 import com.bidflare.backend.repository.AddressRepository;
 import com.bidflare.backend.repository.UserRepository;
 import com.bidflare.backend.service.AddressService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -22,6 +24,7 @@ public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
     private final AddressMapper addressMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -37,6 +40,14 @@ public class AddressServiceImpl implements AddressService {
         }
 
         Address savedAddress = addressRepository.save(address);
+
+        eventPublisher.publishEvent(new NotificationEvent(
+                userId,
+                "ADDRESS_CREATED",
+                "A new address was created.",
+                savedAddress.getId()
+        ));
+
         return addressMapper.toDto(savedAddress);
     }
 
@@ -59,6 +70,14 @@ public class AddressServiceImpl implements AddressService {
 
         addressMapper.updateEntityFromDto(requestDto, address);
         Address updatedAddress = addressRepository.save(address);
+
+        eventPublisher.publishEvent(new NotificationEvent(
+                userId,
+                "ADDRESS_UPDATED",
+                "Your address was updated.",
+                updatedAddress.getId()
+        ));
+
         return addressMapper.toDto(updatedAddress);
     }
 
@@ -81,6 +100,13 @@ public class AddressServiceImpl implements AddressService {
     public void deleteAddress(UUID addressId, UUID userId) {
         Address address = findAddressForUser(addressId, userId);
         addressRepository.delete(address);
+        eventPublisher.publishEvent(new NotificationEvent(
+                userId,
+                "ADDRESS_DELETED",
+                "Your address was deleted.",
+                address.getId()
+        ));
+
     }
 
     private Address findAddressForUser(UUID addressId, UUID userId) {
@@ -96,5 +122,11 @@ public class AddressServiceImpl implements AddressService {
                         addressRepository.save(oldDefault);
                     }
                 });
+        eventPublisher.publishEvent(new NotificationEvent(
+                userId,
+                "SET_DEFAULT_ADDRESS",
+                "Your default address was set."
+                , newDefaultAddressId
+        ));
     }
 }

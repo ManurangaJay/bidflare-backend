@@ -5,6 +5,7 @@ import com.bidflare.backend.dto.bid.BidResponseDto;
 import com.bidflare.backend.dto.bid.BidWithAuctionProductDto;
 import com.bidflare.backend.dto.productImage.ProductImageDto;
 import com.bidflare.backend.entity.*;
+import com.bidflare.backend.event.NotificationEvent;
 import com.bidflare.backend.mapper.AuctionMapper;
 import com.bidflare.backend.mapper.BidMapper;
 import com.bidflare.backend.mapper.ProductImageMapper;
@@ -15,6 +16,7 @@ import com.bidflare.backend.repository.ProductImageRepository;
 import com.bidflare.backend.repository.UserRepository;
 import com.bidflare.backend.service.BidService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,7 @@ public class BidServiceImpl implements BidService {
     private final ProductMapper productMapper;
     private final ProductImageRepository productImageRepository;
     private final ProductImageMapper productImageMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public BidResponseDto createBid(BidCreateDto dto) {
@@ -44,6 +47,12 @@ public class BidServiceImpl implements BidService {
         Bid bid = BidMapper.toEntity(dto, auction, bidder);
         bid = bidRepository.save(bid);
 
+        eventPublisher.publishEvent(new NotificationEvent(
+                auction.getProduct().getSeller().getId(),
+                "BID_PLACED",
+                "A new bid was placed on the auction of " + auction.getProduct().getTitle() + ".",
+                auction.getId()
+        ));
         return BidMapper.toDto(bid);
     }
 

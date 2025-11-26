@@ -1,6 +1,7 @@
 package com.bidflare.backend.service.impl;
 
 import com.bidflare.backend.entity.Product;
+import com.bidflare.backend.event.NotificationEvent;
 import com.bidflare.backend.repository.ProductRepository;
 import com.bidflare.backend.dto.transaction.TransactionCreateDto;
 import com.bidflare.backend.dto.transaction.TransactionResponseDto;
@@ -11,6 +12,7 @@ import com.bidflare.backend.entity.User;
 import com.bidflare.backend.repository.UserRepository;
 import com.bidflare.backend.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public TransactionResponseDto createTransaction(TransactionCreateDto dto) {
@@ -33,6 +36,14 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         Transaction transaction = TransactionMapper.toEntity(dto, user, product);
+
+        eventPublisher.publishEvent(new NotificationEvent(
+                user.getId(),
+                "TRANSACTION_CREATED",
+                "A new transaction was created.",
+                transaction.getId()
+        ));
+
         return TransactionMapper.toDto(transactionRepository.save(transaction));
     }
 
@@ -68,6 +79,20 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         tx.setStatus(Transaction.Status.PAID);
         tx.setPaidAt(LocalDateTime.now());
+
+        eventPublisher.publishEvent(new NotificationEvent(
+                tx.getUser().getId(),
+                "TRANSACTION_PAID",
+                "Your transaction was successfully paid.",
+                tx.getId()
+        ));
+
+        eventPublisher.publishEvent(new NotificationEvent(
+                tx.getProduct().getSeller().getId(),
+                "PRODUCT_SOLD",
+                "Your product was successfully sold.",
+                tx.getProduct().getId()
+        ));
         return TransactionMapper.toDto(transactionRepository.save(tx));
     }
 }

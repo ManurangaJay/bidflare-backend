@@ -4,10 +4,12 @@ import com.bidflare.backend.dto.CreateUserRequestDto;
 import com.bidflare.backend.dto.UpdateUserRequestDto;
 import com.bidflare.backend.dto.UserDto;
 import com.bidflare.backend.entity.User;
+import com.bidflare.backend.event.NotificationEvent;
 import com.bidflare.backend.mapper.UserMapper;
 import com.bidflare.backend.repository.UserRepository;
 import com.bidflare.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.bidflare.backend.exception.ResourceNotFoundException;
@@ -22,6 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public UserDto createUser(CreateUserRequestDto request) {
@@ -32,7 +35,15 @@ public class UserServiceImpl implements UserService {
                 .role(request.role())
                 .isVerified(false)
                 .build();
-        return UserMapper.toDto(userRepository.save(user));
+
+        User savedUser = userRepository.save(user);
+        eventPublisher.publishEvent(new NotificationEvent(
+                user.getId(),
+                "USER_CREATED",
+                "Your account was created successfully!",
+                user.getId()
+        ));
+        return UserMapper.toDto(savedUser);
     }
 
     @Override
@@ -88,11 +99,16 @@ public class UserServiceImpl implements UserService {
         }
 
         User updatedUser = userRepository.save(user);
+
+        eventPublisher.publishEvent(new NotificationEvent(
+                updatedUser.getId(),
+                "USER_UPDATED",
+                "Your account was updated successfully!",
+                updatedUser.getId()
+        ));
+
         return UserMapper.toDto(updatedUser);
     }
-
-
-
 
     @Override
     public void deleteUser(UUID id) {
