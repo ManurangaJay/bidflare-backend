@@ -4,6 +4,7 @@ import com.bidflare.backend.dto.CreateUserRequestDto;
 import com.bidflare.backend.dto.UpdateUserRequestDto;
 import com.bidflare.backend.dto.UserDto;
 import com.bidflare.backend.service.UserService;
+import com.bidflare.backend.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

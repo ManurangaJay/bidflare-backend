@@ -7,6 +7,7 @@ public record ReviewResponseDto(
         UUID id,
         UUID reviewerId,
         UUID sellerId,
+        UUID productId,
         int rating,
         String comment,
         LocalDateTime createdAt
