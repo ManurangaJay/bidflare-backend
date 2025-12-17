@@ -9,10 +9,10 @@ import com.bidflare.backend.repository.ProductImageRepository;
 import com.bidflare.backend.repository.ProductRepository;
 import com.bidflare.backend.service.ProductImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
@@ -27,7 +27,8 @@ public class ProductImageServiceImpl implements ProductImageService {
     private final ProductRepository productRepository;
     private final ProductImageMapper mapper;
 
-    private final String UPLOAD_DIR = new File("src/main/resources/static/images").getAbsolutePath();
+    @Value("${app.upload.dir:src/main/resources/static/images}")
+    private String UPLOAD_DIR;
 
     @Override
     public ProductImageDto addImage(CreateProductImageDto dto) {
@@ -36,11 +37,12 @@ public class ProductImageServiceImpl implements ProductImageService {
 
         MultipartFile file = dto.getImageFile();
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        String filePath = UPLOAD_DIR + "/" + filename;
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+        Path filePath = uploadPath.resolve(filename);
 
         try {
-            Files.createDirectories(Paths.get(UPLOAD_DIR));
-            file.transferTo(new File(filePath));
+            Files.createDirectories(uploadPath);
+            file.transferTo(filePath.toFile());
         } catch (IOException e) {
             throw new RuntimeException("Failed to save image" + e.getMessage());
         }
@@ -67,7 +69,9 @@ public class ProductImageServiceImpl implements ProductImageService {
                 .orElseThrow(() -> new RuntimeException("Image not found"));
 
         try {
-            Files.deleteIfExists(Paths.get(image.getImageUrl()));
+            String filename = image.getImageUrl().substring("/images/".length());
+            Path filePath = Paths.get(UPLOAD_DIR, filename);
+            Files.deleteIfExists(filePath);
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete file", e);
         }
