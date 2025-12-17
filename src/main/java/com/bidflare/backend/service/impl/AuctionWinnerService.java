@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,7 +45,7 @@ public class AuctionWinnerService {
         System.out.println("Running scheduled job: Processing ended auctions...");
 
         // Find auctions that have ended but are not yet closed
-        List<Auction> endedAuctions = auctionRepository.findAllByEndTimeBeforeAndIsClosedFalse(LocalDateTime.now());
+        List<Auction> endedAuctions = auctionRepository.findAllByEndTimeBeforeAndIsClosedFalse(ZonedDateTime.now());
 
         if (endedAuctions.isEmpty()) {
             return; // No auctions to process

@@ -3,7 +3,7 @@ package com.bidflare.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal; // Import BigDecimal for monetary values
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
@@ -19,10 +19,10 @@ public class Auction {
     private UUID id;
 
     @Column(name = "start_time", nullable = false)
-    private LocalDateTime startTime;
+    private ZonedDateTime startTime;
 
     @Column(name = "end_time", nullable = false)
-    private LocalDateTime endTime;
+    private ZonedDateTime endTime;
 
     @Column(name = "last_price", precision = 19, scale = 2)
     private BigDecimal lastPrice;

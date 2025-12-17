@@ -1,11 +1,11 @@
 package com.bidflare.backend.dto.auction;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public record AuctionUpdateDto(
-        LocalDateTime startTime,
-        LocalDateTime endTime,
+        ZonedDateTime startTime,
+        ZonedDateTime endTime,
         Boolean isClosed,
         UUID winnerId
 ) {}
